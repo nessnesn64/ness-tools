@@ -4,7 +4,7 @@ audstream_offsetone=0
 streamcount=0
 
 unset auddelay
-target_video_size_MB="24"
+target_video_size_MB="20"
 
 
 fetch_seconds_mkv () {
@@ -60,11 +60,11 @@ ffmpeg -y -i file:"$1" -map 0:v -c:v libx265 -b:v "$target_video_bitrate_kbit_s"
 && \
 ffmpeg -y -i file:"$1" -map 0:v -c:v libx265 -b:v "$target_video_bitrate_kbit_s"k -pass 2 -c:a aac -b:a "$target_audio_bitrate_kbit_s"k file:"${1%.*}-24MB-noaudio.mp4"
 
-if [[ $(ls -1q *.opus | wc -l) == 1 ]]
+if [[ $(ls -1q stream*.opus | wc -l) == 1 ]]
 then
     echo "Only 1 Audio Track"
     mv stream0.opus output.opus
-elif [[ $(ls -1q *.opus | wc -l) == 2 ]]
+elif [[ $(ls -1q stream*.opus | wc -l) == 2 ]]
 then
     ffmpeg -y -i "stream0.opus" -i "stream1.opus" -filter_complex amix=inputs=2:duration=first:dropout_transition=3 output.opus
 fi
